@@ -1,8 +1,8 @@
 # Flappy Bird in Elm
 
-This is a remake of the popular [Flappy Bird][fb] game, this time written in Elm and WebGL.
+This is a remake of the popular [Flappy Bird][fb] game, this time written in Elm and WebGL. [Try it online][home].
 
-[Try it online][home].
+![Screenshot](./screenshot.gif)
 
 ## Run locally
 

@@ -9,39 +9,29 @@ module Camera exposing
 
 {-| This provides a basic camera
 -}
-
 import Math.Vector2 as Vector2 exposing (Vec2, vec2)
 import Math.Matrix4 as Matrix4 exposing (Mat4)
 import Vector2Extra as Vector2
+
 
 {-|
 A camera represents how to render the virtual world. It's essentially a
 transformation from virtual game coordinates to pixel coordinates on the screen
 -}
 type alias Camera =
-    { area : Float
+    { width : Float
     , position : Vec2
     }
 
 
-{-|
-A camera that always shows the same viewport area. This is useful in a top down game.
-This means that you probably want to specify the area property like this:
-
-    camera (16, 10) (x, y)
-
-This would show 16 by 10 units _if_ the game is displayed in a 16:10 viewport. However,
-in a 4:3 viewport it would show sqrt(16*10*4/3)=14.6 by sqrt(16*10*3/4)=10.95 units
+{-| A camera that always shows `width` units of your game horizontally.
+Well suited for a side-scroller.
 -}
-camera : Vec2 -> Vec2 -> Camera
-camera size position =
-    let
-        ( w, h ) =
-            Vector2.toTuple size
-    in
-        { area = w * h
-        , position = position
-        }
+camera : Float -> Vec2 -> Camera
+camera width position =
+    { width = width
+    , position = position
+    }
 
 
 {-| Calculate the matrix transformation that represents how to transform the
@@ -53,28 +43,17 @@ view viewportSize camera =
         ( w, h ) =
             Vector2.toTuple viewportSize
 
-        -- Snap camera position to nearest pixel, since passing unrounded
-        --   values will cause artifacts on the final scene
         ( x, y ) =
             camera.position
                 |> Vector2.toTuple
 
-        -- Calculate the viewport size in game units and halve it
         ( w_, h_ ) =
-            ( sqrt ( camera.area * w / h ) / 2
-            , sqrt ( camera.area * h / w ) / 2 )
+            ( camera.width * 0.5, camera.width * h / w * 0.5 ) 
 
         ( l, r, d, u ) =
             ( x - w_, x + w_, y - h_, y + h_ )
     in
         Matrix4.makeOrtho2D l r d u
-
-
--- {-| Move a camera by the given vector *relative* to the camera.
--- -}
--- moveBy : Vec2 -> Camera -> Camera
--- moveBy offset camera =
---     { camera | position = Vector2.add camera.position offset }
 
 
 {-| Move a camera to the given location. In *absolute* coordinates.

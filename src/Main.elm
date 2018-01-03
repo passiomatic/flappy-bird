@@ -31,7 +31,7 @@ vieportScale =
 
 
 camera =
-    Camera.camera viewportSize Vector2.zero
+    Camera.camera 144 Vector2.zero
 
 
 init : Flags -> ( Model, Cmd Msg )
